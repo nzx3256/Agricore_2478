@@ -3,15 +3,15 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from sqlalchemy import CheckConstraint, ForeignKey, Numeric, String, Enum as SqlEnum
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .enums import EquipmentStatus
 
 from .base import Base
 
 if TYPE_CHECKING:
-    from .farm import Farm
     from .job import FieldJob
+    from .farm import Farm
 
 class Equipment(Base):
     __tablename__ = "equipments"
@@ -30,8 +30,8 @@ class Equipment(Base):
     fuel_level: Mapped[float] = mapped_column(Numeric(5,2))
     farm_id: Mapped[int] = mapped_column(ForeignKey("farms.id"))
 
-    farm: Mapped["Farm"] = mapped_column(back_populate="equipments")
-    job: Mapped["FieldJob"] = mapped_column(back_populate="equipment")
+    farm: Mapped["Farm"] = relationship(back_populates="equipments")
+    field_jobs: Mapped["FieldJob"] = relationship(back_populates="equipment")
 
     def __repr__(self):
         return (f"Equipment: id={self.id}, serial_number={self.serial_number}, "

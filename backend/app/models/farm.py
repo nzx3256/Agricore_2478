@@ -8,6 +8,7 @@ from .base import Base
 
 if TYPE_CHECKING:
     from .equipment import Equipment
+    from .farmer import Farmer
 
 class Farm(Base):
     __tablename__ = "farms"
@@ -16,13 +17,12 @@ class Farm(Base):
     name: Mapped[str] = mapped_column(String(100))
     location_region: Mapped[str] = mapped_column(String(150))
     capacity: Mapped[int] = mapped_column(Integer)
-    supervisor_id: Mapped[int] = mapped_column(Integer)
-    #supervisor_id: Mapped[int] = mapped_column(Integer, ForeignKey("supervisor.id"))
-    #supervisor: Mapped["Supervisor"] = relationship(back_populates="supervisor")
+    #supervisor_id: Mapped[int] = mapped_column(Integer)
 
-    equipment: Mapped["Equipment"] = relationship(back_populates="farm")
+    equipments: Mapped["Equipment"] = relationship(back_populates="farm")
+    farmers: Mapped["Farmer"] = relationship(back_populates="farm")
 
     def __repr__(self):
         return (f"Farm: id={self.id}, name={self.name}, "
                 f"location_region={self.location_region}, "
-                f"capacity={self.capacity}, supervisor_id={self.supervisor_id}")
+                f"capacity={self.capacity}") #, supervisor_id={self.supervisor_id}")
