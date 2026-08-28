@@ -17,7 +17,7 @@ class EquipmentStatus(str, Enum):
 
 class FieldJobPriority(str, Enum):
     LOW = "Low"
-    MEDUIM = "Medium"
+    MEDIUM = "Medium"
     CRITICAL = "Critical"
 
 class FieldJobStatus(str, Enum):

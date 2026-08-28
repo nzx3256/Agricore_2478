@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from sqlalchemy import CheckConstraint, ForeignKey, Numeric, String, Enum as SqlEnum
+from sqlalchemy import CheckConstraint, ForeignKey, Integer, Numeric, Sequence, String, Enum as SqlEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .enums import EquipmentStatus
@@ -20,7 +20,11 @@ class Equipment(Base):
                         name = "fuel_level_range"),
     )
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id_seq = Sequence(f'{__tablename__}_id_seq', start=1, increment=1);
+    id: Mapped[int] = mapped_column(
+            id_seq,
+            primary_key=True,
+            server_default=id_seq.next_value())
     serial_number: Mapped[str] = mapped_column(String(50))
     model: Mapped[str] = mapped_column(String(100))
     status: Mapped[EquipmentStatus] = mapped_column(SqlEnum(

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sqlalchemy import ForeignKey, String, Integer
+from sqlalchemy import Sequence, String, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import TYPE_CHECKING
 
@@ -13,7 +13,11 @@ if TYPE_CHECKING:
 class Farm(Base):
     __tablename__ = "farms"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id_seq = Sequence(f'{__tablename__}_id_seq', start=1, increment=1);
+    id: Mapped[int] = mapped_column(
+            id_seq,
+            primary_key=True,
+            server_default=id_seq.next_value())
     name: Mapped[str] = mapped_column(String(100))
     location_region: Mapped[str] = mapped_column(String(150))
     capacity: Mapped[int] = mapped_column(Integer)

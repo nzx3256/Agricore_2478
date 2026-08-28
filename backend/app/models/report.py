@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sqlalchemy import ForeignKey, Integer, Text, DateTime, func
+from sqlalchemy import ForeignKey, Integer, Sequence, Text, DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from datetime import datetime
@@ -15,7 +15,11 @@ if TYPE_CHECKING:
 class ServiceReport(Base):
     __tablename__ = "service_reports"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id_seq = Sequence(f'{__tablename__}_id_seq', start=1, increment=1);
+    id: Mapped[int] = mapped_column(
+            id_seq,
+            primary_key=True,
+            server_default=id_seq.next_value())
     file_url: Mapped[str] = mapped_column(Text)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     field_job_id: Mapped[int] = mapped_column(Integer, ForeignKey("field_jobs.id"))
