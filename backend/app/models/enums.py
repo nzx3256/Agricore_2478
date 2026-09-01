@@ -1,12 +1,3 @@
-"""
-RoboPulse Command Center
-Day 1 - Enumerated types shared across all domain models.
-
-The benefit of creating these as enums is that typos (such as idlee instead of idle)
-will be caught at compile time, rather than at runtime. Very important for fields that are used as foreign keys in the database, since that can cause integrity issues.
-
-"""
-
 from enum import Enum
 
 class EquipmentStatus(str, Enum):
