@@ -20,7 +20,7 @@ class Equipment(Base):
                         name = "fuel_level_range"),
     )
 
-    id_seq = Sequence(f'{__tablename__}_id_seq', start=1, increment=1);
+    id_seq = Sequence(f'{__tablename__}_id_seq');
     id: Mapped[int] = mapped_column(
             id_seq,
             primary_key=True,

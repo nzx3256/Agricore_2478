@@ -1,7 +1,7 @@
 from pydantic import BaseModel, ConfigDict, Field
-from sqlalchemy import Numeric
+from sqlalchemy import Text, String
 
-from app.models.enums import EquipmentStatus
+from app.models import EquipmentStatus
 
 class EquipmentBase(BaseModel):
     serial_number: str
@@ -15,4 +15,10 @@ class EquipmentCreate(EquipmentBase):
 
 class EquipmentRead(EquipmentBase):
     id: int
+    model_config = ConfigDict(from_attributes=True)
+
+class EquipmentReliabilityMetrics(BaseModel):
+    equipment_id: int
+    equipment_model: str = Field(min_length=1, max_length=100)
+    completed_failed_ratio: str = Field(min_length=3)
     model_config = ConfigDict(from_attributes=True)

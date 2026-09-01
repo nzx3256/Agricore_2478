@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class Farm(Base):
     __tablename__ = "farms"
 
-    id_seq = Sequence(f'{__tablename__}_id_seq', start=1, increment=1);
+    id_seq = Sequence(f'{__tablename__}_id_seq');
     id: Mapped[int] = mapped_column(
             id_seq,
             primary_key=True,

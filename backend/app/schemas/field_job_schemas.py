@@ -12,6 +12,16 @@ class FieldJobBase(BaseModel):
 class FieldJobCreate(FieldJobBase):
     pass
 
+class JobStatusUpdate(BaseModel):
+    status: FieldJobStatus
+
 class FieldJobRead(FieldJobBase):
     id: int
+    model_config = ConfigDict(from_attributes=True)
+
+class DiscrepencyRead(BaseModel):
+    job_id: int
+    job_title: str = Field(min_length=1, max_length=100)
+    farmer_id: int
+    equipment_id: int
     model_config = ConfigDict(from_attributes=True)

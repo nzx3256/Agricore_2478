@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 class FieldJob(Base):
     __tablename__ = "field_jobs"
     
-    id_seq = Sequence(f"{__tablename__}_id_seq", start=1, increment=1);
+    id_seq = Sequence(f"{__tablename__}_id_seq");
     id: Mapped[int] = mapped_column(
             id_seq,
             primary_key=True,
@@ -38,6 +38,13 @@ class FieldJob(Base):
     farmer: Mapped["Farmer"] = relationship(back_populates="field_jobs")
     reports: Mapped["ServiceReport"] = relationship(back_populates="field_job")
 
+    #update the mission status to completed
+    def mark_completed(self) -> None:
+        self.status = FieldJobStatus.COMPLETED
+
+    #update the mission status to failed
+    def mark_failed(self) -> None:
+        self.status = FieldJobStatus.FAILED
     
     def __repr__(self):
         return (f"Field Job: id={self.id}, title={self.title}, "

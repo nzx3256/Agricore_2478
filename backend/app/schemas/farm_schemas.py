@@ -11,3 +11,9 @@ class FarmCreate(FarmBase):
 class FarmRead(FarmBase):
     id: int
     model_config = ConfigDict(from_attributes=True)
+
+class FarmMaintenancePercentage(BaseModel):
+    farm_id: int
+    farm_name: str = Field(min_length=1, max_length=100)
+    percent_maintenance: float
+    model_config = ConfigDict(from_attributes=True)
