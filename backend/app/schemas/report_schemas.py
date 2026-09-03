@@ -6,7 +6,7 @@ class ServiceReportBase(BaseModel):
     file_url: str = Field(min_length=1)
     notes: str = Field(min_length=1)
     field_job_id: int
-    created_at: datetime = Field()
+    created_at: datetime | None = None
 
 class ServiceReportCreate(ServiceReportBase):
     pass

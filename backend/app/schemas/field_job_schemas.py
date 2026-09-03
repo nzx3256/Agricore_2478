@@ -22,6 +22,6 @@ class FieldJobRead(FieldJobBase):
 class DiscrepencyRead(BaseModel):
     job_id: int
     job_title: str = Field(min_length=1, max_length=100)
-    farmer_id: int
-    equipment_id: int
+    farmer_farm_id: int
+    equipment_farm_id: int
     model_config = ConfigDict(from_attributes=True)

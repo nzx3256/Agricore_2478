@@ -23,7 +23,7 @@ class ServiceReport(Base):
     file_url: Mapped[str] = mapped_column(Text)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     field_job_id: Mapped[int] = mapped_column(Integer, ForeignKey("field_jobs.id"))
-    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     field_job: Mapped["FieldJob"] = relationship(back_populates="reports")
 

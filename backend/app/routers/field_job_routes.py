@@ -16,20 +16,21 @@ async def list_all_jobs(
     results = await db.execute(select(FieldJob))
     return list(results.scalars().all())
 
-@router.get(path="/discrepencies", response_model=list[FieldJobRead])
+@router.get(path="/discrepencies", response_model=list[DiscrepencyRead])
 async def get_colocation_discrepencies(
     db: AsyncSession = Depends(get_db), 
     _: User = Depends(get_current_user)
-) -> list[DiscrepencyRead]:
+):
     stmt = (
         select(
             FieldJob.id.label("job_id"), FieldJob.title.label("job_title"),
-            Equipment.farm_id, Farmer.farm_id
+            Equipment.farm_id.label("farmer_farm_id"), Farmer.farm_id.label("equipment_farm_id")
         ).join(Equipment).join(Farmer)
         .where(Equipment.farm_id != Farmer.farm_id)
     )
     results = await db.execute(stmt)
-    return list(results.scalars().all())
+    return [DiscrepencyRead.model_validate(result)
+            for result in results.mappings().all()]
 
 @router.get(path="/{job_id}", response_model=FieldJobRead)
 async def get_job(
