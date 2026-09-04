@@ -10,8 +10,8 @@ from app.security import hash_password
 
 async def seed_dummy_data(db: AsyncSession) -> None:
     db.add_all([
-        Farm(name="Jolly Ol' Ranch", location_region="Kansas", capacity=10),
-        Farm(name="Farmhouse", location_region="Nevada", capacity=50)
+        Farm(name="Jolly Ol' Ranch", location_region="Kansas", capacity=10, supervisor_id=1),
+        Farm(name="Farmhouse", location_region="Nevada", capacity=50, supervisor_id=2)
     ])
     db.add_all([
         Equipment(serial_number="HACH1", model="Hachet", status=EquipmentStatus.IDLE, fuel_level=100, farm_id=1),

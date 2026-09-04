@@ -21,7 +21,7 @@ class Farm(Base):
     name: Mapped[str] = mapped_column(String(100))
     location_region: Mapped[str] = mapped_column(String(150))
     capacity: Mapped[int] = mapped_column(Integer)
-    #supervisor_id: Mapped[int] = mapped_column(Integer)
+    supervisor_id: Mapped[int] = mapped_column(Integer)
 
     equipments: Mapped["Equipment"] = relationship(back_populates="farm")
     farmers: Mapped["Farmer"] = relationship(back_populates="farm")

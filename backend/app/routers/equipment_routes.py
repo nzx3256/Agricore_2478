@@ -7,17 +7,23 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.operators import from_
 
 from app.dependencies import get_current_user, get_db, require_role
-from app.models import Equipment, FieldJob, FieldJobStatus, User, UserRole
-from app.schemas.equipment_schemas import EquipmentCreate, EquipmentRead, EquipmentReliabilityMetrics
+from app.models import Equipment, EquipmentStatus, \
+    FieldJob, FieldJobStatus, User, UserRole
+from app.schemas.equipment_schemas import EquipmentCreate, EquipmentRead, \
+    EquipmentReliabilityMetrics
 
 router = APIRouter(prefix="/equipment", tags=["equipment"])
 
 @router.get("", response_model=list[EquipmentRead])
 async def list_equipment(
+    low_fuel_threshold: float | None = None,
     db: AsyncSession = Depends(get_db),
     _: User = Depends(get_current_user)
 ) -> list[Equipment]:
-    results = await db.execute(select(Equipment))
+    stmt = select(Equipment)
+    if low_fuel_threshold is not None:
+        stmt = stmt.where(Equipment.fuel_level <= low_fuel_threshold)
+    results = await db.execute(stmt)
     return list(results.scalars().all())
 
 @router.get("/reliability_metrics", response_model=list[EquipmentReliabilityMetrics])

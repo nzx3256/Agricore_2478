@@ -5,7 +5,7 @@ import { display } from '@mui/system';
 function AppHeader({ username, role, onLogout }) {
     return (
         <AppBar position="static">
-            <Toolbar>
+            <Toolbar sx={{ gap: 4 }}>
                 <PrecisionManufacturingIcon sx={{ mr: 2 }} />
                 <Typography variant='h6' component='h1'>
                     RoboPulse Fleet Command Center

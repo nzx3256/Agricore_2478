@@ -3,8 +3,10 @@ from sqlalchemy import case, Float, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.dependencies import get_current_user, get_db, require_role
-from app.schemas.farm_schemas import FarmMaintenancePercentage, FarmRead, FarmCreate
-from app.models import Farm, User, Equipment, EquipmentStatus, UserRole
+from app.schemas.farm_schemas import FarmMaintenancePercentage, FarmRead, \
+        FarmCreate, ReportingLinesRead
+from app.models import Farm, FieldJob, Farmer, User, Equipment, \
+        EquipmentStatus, UserRole
 
 router = APIRouter(prefix="/farms", tags=["farms"])
 
@@ -38,6 +40,31 @@ async def get_maintenance_flags(
     )
     results = await db.execute(stmt)
     return [FarmMaintenancePercentage.model_validate(result)
+            for result in results.mappings().all()]
+
+@router.get("/reporting_lines", response_model=list[ReportingLinesRead])
+async def get_reporting_lines(
+    supervisor_id: int,
+    db: AsyncSession = Depends(get_db),
+    _: User = Depends(get_current_user)
+) -> list[ReportingLinesRead]:
+    stmt = (
+        select(
+            Farmer.id.label("farmer_id"),
+            Farmer.full_name.label("farmers_name"),
+            func.count(FieldJob.id).label("active_jobs"),
+        )
+        .join(Farm, Farm.id == Farmer.farm_id)
+        .join(FieldJob, FieldJob.farmer_id == Farmer.id)
+        .where(
+            Farm.supervisor_id == supervisor_id,
+            FieldJob.status.in_(["Pending", "In-Progress"]),
+        )
+        .group_by(Farmer.id, Farmer.full_name)
+        .order_by(Farmer.id)
+    )
+    results = await db.execute(stmt)
+    return [ReportingLinesRead.model_validate(result)
             for result in results.mappings().all()]
 
 @router.get("/{farm_id}", response_model=FarmRead)

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { Alert, Box, CircularProgress } from '@mui/material';
+import { Alert, Box, CircularProgress, Typography } from '@mui/material';
 import apiClient from '../../api/client.js';
 
 const columns = [
@@ -42,9 +42,14 @@ function EquipmentDataGrid() {
     if (loading) return <CircularProgress />;
     if (error) return <Alert severity='error'>{error}</Alert>;
     return (
-        <Box sx={{ height: 400, width: '100%' }}>
-            <DataGrid rows={equipment} columns={columns} getRowId={(row) => row.id} />
-        </Box>
+        <>
+            <Typography variant="h6" component="h2" color='secondary' gutterBottom>
+                Equipment:
+            </Typography>
+            <Box sx={{ mb: 4, height: 400, width: '100%' }}>
+                <DataGrid rows={equipment} columns={columns} getRowId={(row) => row.id} />
+            </Box>
+        </>
     );
 }
 

@@ -3,7 +3,7 @@ import { Card, CardContent, Typography, Chip, Stack } from '@mui/material'
 const LOW_BATTERY_THRESHOLD = 20;
 
 function RobotCard({ equipment }) {
-    const isLowFuel = equipment.fuelLevel < LOW_BATTERY_THRESHOLD;
+    const isLowFuel = equipment.fuel_level < LOW_BATTERY_THRESHOLD;
     return (
         <Card variant='outlined' sx={{ minWidth: 240 }}>
             <CardContent>
@@ -13,10 +13,10 @@ function RobotCard({ equipment }) {
                 <Typography color='text.secondary' gutterBottom>
                     {equipment.model}
                 </Typography>
-                <Stack direction='row' spacing={1} alignItems='center'>
+                <Stack direction='row' spacing={1} sx={{ alignItems: 'center' }}>
                     <Chip
-                        label={`Fuel: ${equipment.fuelLevel}`}
-                        color={isLowBattery ? 'error' : 'success'}
+                        label={`Fuel: ${equipment.fuel_level}`}
+                        color={isLowFuel ? 'error' : 'success'}
                         size='small'
                     />
                     <Chip label={equipment.status} variant='outlined' size='small' />

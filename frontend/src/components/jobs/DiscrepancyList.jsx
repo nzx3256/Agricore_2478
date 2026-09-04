@@ -5,7 +5,7 @@ function DiscrepancyList({ discrepancies }) {
     return (
         <Grid container spacing={2}>
             {discrepancies.map((discrepancy) => (
-                <Grid item key={discrepancy.jobId}>
+                <Grid key={discrepancy.jobId}>
                     <DiscrepancyCard discrepancy={discrepancy} />
                 </Grid>
             ))}

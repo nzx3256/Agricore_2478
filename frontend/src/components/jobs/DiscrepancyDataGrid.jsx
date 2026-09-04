@@ -2,7 +2,7 @@ import { useEffect, userState, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import {
     Alert, Box, CircularProgress, FormControl,
-    InputLabel, MenuItem, Select
+    InputLabel, MenuItem, Select, Typography
 } from '@mui/material';
 import apiClient from '../../api/client.js';
 
@@ -48,32 +48,37 @@ function DiscrepancyDataGrid() {
 
     return (
         <Box>
-            <FormControl size='small' sx={{ mb: 2, minWidth: 100 }}>
-                <InputLabel id='priority-filter-label'>Priority</InputLabel>
-                <Select
-                    labelId='priority-filter-label'
-                    label='priority'
-                    value={priority}
-                    onChange={(event) => setPriority(event.target.value)}
-                >
-                    {PRIORITY_OPTIONS.map((option) => (
-                        <MenuItem key={option || 'All'} value={option}>
-                            {option === '' ? 'All' : option}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
-            {loading && <CircularProgress />}
-            {error && <Alert severity='error'>{error}</Alert>}
-            {!loading && !error && (
-                <Box sx={{ height: 400, width: '100%' }}>
-                    <DataGrid
-                        rows={discrepancies}
-                        columns={columns}
-                        getRowId={(row) => row.job_id}
-                    />
-                </Box>
-            )}
+            <>
+                <Typography variant="h6" component="h2" color='secondary' gutterBottom>
+                    Co-Location Discrepancies:
+                </Typography>
+                <FormControl size='small' sx={{ mb: 2, minWidth: 100 }}>
+                    <InputLabel id='priority-filter-label'>Priority</InputLabel>
+                    <Select
+                        labelId='priority-filter-label'
+                        label='priority'
+                        value={priority}
+                        onChange={(event) => setPriority(event.target.value)}
+                    >
+                        {PRIORITY_OPTIONS.map((option) => (
+                            <MenuItem key={option || 'All'} value={option}>
+                                {option === '' ? 'All' : option}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+                {loading && <CircularProgress />}
+                {error && <Alert severity='error'>{error}</Alert>}
+                {!loading && !error && (
+                    <Box sx={{ height: 400, width: '100%' }}>
+                        <DataGrid
+                            rows={discrepancies}
+                            columns={columns}
+                            getRowId={(row) => row.job_id}
+                        />
+                    </Box>
+                )}
+            </>
         </Box>
     );
 }
