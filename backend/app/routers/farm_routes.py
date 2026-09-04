@@ -25,9 +25,9 @@ async def get_maintenance_flags(
     _: User = Depends(get_current_user)
 ) -> list[FarmMaintenancePercentage]:
     maintenance_count = (
-        func.sum(case((Equipment.status == EquipmentStatus.MAINTENANCE, 1), else_=0)) .cast(Float)
+        func.sum(case((Equipment.status == EquipmentStatus.MAINTENANCE, 1), else_=0)).cast(Float)
     )
-    percentage_field = maintenance_count/func.count(Equipment.id)
+    percentage_field = maintenance_count/func.count(Equipment.id)*100
     stmt = (
         select(
             Farm.id.label("farm_id"),
@@ -53,6 +53,7 @@ async def get_reporting_lines(
             Farmer.id.label("farmer_id"),
             Farmer.full_name.label("farmers_name"),
             func.count(FieldJob.id).label("active_jobs"),
+            Farm.supervisor_id
         )
         .join(Farm, Farm.id == Farmer.farm_id)
         .join(FieldJob, FieldJob.farmer_id == Farmer.id)
@@ -60,7 +61,7 @@ async def get_reporting_lines(
             Farm.supervisor_id == supervisor_id,
             FieldJob.status.in_(["Pending", "In-Progress"]),
         )
-        .group_by(Farmer.id, Farmer.full_name)
+        .group_by(Farmer.id, Farmer.full_name, Farm.supervisor_id)
         .order_by(Farmer.id)
     )
     results = await db.execute(stmt)

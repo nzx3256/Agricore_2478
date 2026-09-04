@@ -20,13 +20,10 @@ function FieldJobDataGrid() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    //React effect hook that runs our async fetch 
     useEffect(() => {
-        //tracks component mount status to prevent memory leaks via network request delays
         let isMounted = true;
 
-        //pulls our robot fleet data from our backend
-        async function fetchRobots() {
+        async function fetchJobs() {
             try {
                 let response = await apiClient.get('/jobs');
                 if (isMounted) setJobs(response.data);
@@ -37,7 +34,7 @@ function FieldJobDataGrid() {
             }
         }
 
-        fetchRobots();
+        fetchJobs();
 
         return () => {
             isMounted = false;

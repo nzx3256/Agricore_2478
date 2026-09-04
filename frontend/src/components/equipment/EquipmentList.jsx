@@ -43,8 +43,9 @@ function EquipmentList() {
             </Typography>
             <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
                 <TextField
-                    label="Fuel Threshold"
+                    label="<= Fuel Threshold"
                     value={threshold}
+                    sx={{ width: 200 }}
                     type="number"
                     slotProps={{
                         htmlInput: { min: 0, max: 100 }

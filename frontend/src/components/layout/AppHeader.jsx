@@ -8,7 +8,7 @@ function AppHeader({ username, role, onLogout }) {
             <Toolbar sx={{ gap: 4 }}>
                 <PrecisionManufacturingIcon sx={{ mr: 2 }} />
                 <Typography variant='h6' component='h1'>
-                    RoboPulse Fleet Command Center
+                    AgriCore Farm Provisions:
                 </Typography>
                 {username && (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>

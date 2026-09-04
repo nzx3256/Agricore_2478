@@ -1,60 +1,57 @@
 import { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { Alert, Box, CircularProgress, Typography } from '@mui/material';
+import { Alert, Box, CircularProgress, Typography, TextField, Button } from '@mui/material';
 import apiClient from '../../api/client.js';
 
-//defines our DataGrid columns and maps them to our backend API response data
 const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'serial_number', headerName: 'Serial Number', width: 150 },
-    { field: 'model', headerName: 'Model', width: 160 },
-    { field: 'battery_level', headerName: 'Battery %', width: 120, type: 'number' },
-    { field: 'status', headerName: 'Status', width: 130 },
-    { field: 'facility_id', headerName: 'Facility ID', width: 110, type: 'number' },
+    { field: 'farm_id', headerName: 'Farm ID', width: 70 },
+    { field: 'farm_name', headerName: 'Farm Name', width: 180 },
+    { field: 'percent_maintenance', headerName: 'Maintenance %', width: 230 },
 ];
 
-//local state variables for tracking table rows, loading status, and network errors
-//to track the lifecycle of the async API request so the UI can render appropriately
-function RobotDataGrid() {
-    const [robots, setRobots] = useState([]);
-    const [loading, setLoading] = useState(true);
+function MaintenanceFlagsDataGrid() {
+    const [flags, setFlags] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [threshold, setThreshold] = useState(0.0);
 
-    //React effect hook that runs our async fetch 
-    useEffect(() => {
-        //tracks component mount status to prevent memory leaks via network request delays
-        let isMounted = true;
-
-        //pulls our robot fleet data from our backend
-        async function fetchRobots() {
-            try {
-                const response = await apiClient.get('/robots');
-                if (isMounted) setRobots(response.data);
-            } catch {
-                if (isMounted) setError('Could not load fleet data.');
-            } finally {
-                if (isMounted) setLoading(false);
-            }
+    async function handleSearch() {
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await apiClient.get('/farms/maintenance_flags',
+                { params: { threshold: threshold } });
+            setFlags(response.data);
+        } catch {
+            setError('Could not load metric data (Maintenance Flags).');
+        } finally {
+            setLoading(false);
         }
+    }
 
-        fetchRobots();
-
-        return () => {
-            isMounted = false;
-        };
-    }, []);
-
-    //shows a spinning progress indicator if loading data
-    if (loading) return <CircularProgress />;
-    //shows error alert if API call fails
-    if (error) return <Alert severity="error">{error}</Alert>;
-
-    //loads data grid component if all goes well
     return (
-        <Box sx={{ height: 400, width: '100%' }}>
-            <DataGrid rows={robots} columns={columns} getRowId={(row) => row.id} />
+        <Box sx={{ height: 400, width: '100%' }} >
+            <Typography variant="h6" component="h2" color='secondary' gutterBottom>
+                Maintenance Flags:
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                <TextField
+                    label=">=Maintenance Threshold"
+                    value={threshold}
+                    type="number"
+                    sx={{ width: 200 }}
+                    slotProps={{
+                        htmlInput: { min: 0, max: 100 }
+                    }}
+                    onChange={(event) => setThreshold(event.target.value)}
+                />
+                <Button variant="outlined" onClick={handleSearch}>Lookup</Button>
+            </Box >
+            {!loading && !error && <DataGrid rows={flags} columns={columns} getRowId={(row) => row.farm_id} />}
+            {loading && !error && <CircularProgress />}
+            {error && <Alert severity="error">{error}</Alert>}
         </Box>
     );
 }
 
-export default RobotDataGrid;
+export default MaintenanceFlagsDataGrid;

@@ -24,4 +24,5 @@ class ReportingLinesRead(BaseModel):
     farmer_id: int
     farmers_name: str
     active_jobs: int
+    supervisor_id: int
     model_config = ConfigDict(from_attributes=True)

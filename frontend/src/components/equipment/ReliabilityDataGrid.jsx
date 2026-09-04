@@ -16,8 +16,6 @@ function ReliabilityDataGrid() {
 
     useEffect(() => {
         let isMounted = true;
-        //setError(null);
-        //setLoading(true);
 
         async function fetchMetrics() {
             try {

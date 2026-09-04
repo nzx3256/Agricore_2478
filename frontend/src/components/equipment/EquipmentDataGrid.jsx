@@ -14,18 +14,20 @@ const columns = [
 
 function EquipmentDataGrid() {
     const [equipment, setEquipment] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         let isMounted = true;
+        setLoading(true)
+        setError(null)
         async function fetchEquipment() {
             try {
                 const response = await apiClient.get('/equipment');
                 if (isMounted) setEquipment(response.data);
             }
             catch {
-                if (isMounted) setError('Could not load fleet data.')
+                if (isMounted) setError('Could not load Equipment data.')
             }
             finally {
                 if (isMounted) setLoading(false);

@@ -3,6 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.dependencies import get_current_user, get_db, require_role
+from app.models.enums import FieldJobPriority
 from app.schemas.field_job_schemas import DiscrepencyRead, FieldJobCreate, FieldJobRead, JobStatusUpdate
 from app.models import FieldJob, FieldJobStatus, Farmer, Equipment, User, UserRole
 
@@ -18,6 +19,7 @@ async def list_all_jobs(
 
 @router.get(path="/discrepencies", response_model=list[DiscrepencyRead])
 async def get_colocation_discrepencies(
+    priority: FieldJobPriority | None = None,
     db: AsyncSession = Depends(get_db), 
     _: User = Depends(get_current_user)
 ):
@@ -28,6 +30,8 @@ async def get_colocation_discrepencies(
         ).join(Equipment).join(Farmer)
         .where(Equipment.farm_id != Farmer.farm_id)
     )
+    if priority is not None:
+        stmt = stmt.where(FieldJob.priority == priority)
     results = await db.execute(stmt)
     return [DiscrepencyRead.model_validate(result)
             for result in results.mappings().all()]
